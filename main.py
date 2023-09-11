@@ -71,11 +71,11 @@ app.layout = html.Div(children=[html.H1('SpaceX Launch Records Dashboard',
 )
 def get_pie_chart(entered_site):
     if entered_site == 'ALL':
-        fig = px.pie(spacex_df, names='pie chart names', title='Total Success Launches')
+        fig = px.pie(spacex_df, values='class', names='Launch Site', title='Total Success Launches')
         return fig
     else:
         filtered_df = spacex_df[spacex_df['Launch Site'] == entered_site]
-        fig = px.pie(filtered_df, names='class', title="Total Success Launches for site " + entered_site)
+        fig = px.pie(filtered_df, values='class', names='Launch Site', title="Total Success Launches for site " + entered_site)
         return fig
 
 
@@ -104,5 +104,4 @@ def update_scatter_chart(selected_site, payload_range):
 
 # Run the Dash app
 if __name__ == '__main__':
-
     app.run_server(debug=True)
