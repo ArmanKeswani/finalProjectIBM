@@ -23,7 +23,9 @@ min_payload = spacex_df['Payload Mass (kg)'].min()
 
 app = dash.Dash(__name__)
 
-options = [{'label': 'All Sites', 'value': 'ALL'}, {'label': 'site1', 'value': 'site1'}, ...]
+options = [{'label': 'All Sites', 'value': 'ALL'}]
+for row in spacex_df['Launch Site'].unique():
+    options.append({'label': row, 'value': row})
 
 app.layout = html.Div(children=[html.H1('SpaceX Launch Records Dashboard',
                                         style={'textAlign': 'center', 'color': '#503D36',
@@ -33,10 +35,7 @@ app.layout = html.Div(children=[html.H1('SpaceX Launch Records Dashboard',
                                 # dcc.Dropdown(id='site-dropdown',...)
                                 html.Br(),
                                 dcc.Dropdown(id='site-dropdown',
-                                             options=[
-                                                 {'label': 'All Sites', 'value': 'ALL'},
-                                                 {'label': 'site1', 'value': 'site1'},
-                                             ],
+                                             options= options,
                                              value='ALL',
                                              placeholder="place holder here",
                                              searchable=True
@@ -75,7 +74,8 @@ def get_pie_chart(entered_site):
         return fig
     else:
         filtered_df = spacex_df[spacex_df['Launch Site'] == entered_site]
-        fig = px.pie(filtered_df, values='class', names='Launch Site', title="Total Success Launches for site " + entered_site)
+        count_df = filtered_df.groupby('class').size().reset_index(name='countSuccesOrFailure')
+        fig = px.pie(count_df, values='countSuccesOrFailure', names='class', title="Total Success Launches for site " + entered_site)
         return fig
 
 
